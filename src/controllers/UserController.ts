@@ -1,9 +1,9 @@
 import { RequestHandler, Request, Response } from "express";
 import mongoose, { ClientSession } from "mongoose";
-import { Post } from "../models/Post";
+import { User } from "../models/User";
 
 export default class PostController {
-  createPost: RequestHandler = async (
+  addUser: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
@@ -13,16 +13,16 @@ export default class PostController {
       session = await mongoose.startSession();
       session.startTransaction();
 
-      const post = new Post(req.body);
+      const user = new User(req.body);
 
-      let newPost = await post.save();
+      let newUser = await user.save();
 
       await session.commitTransaction();
       session.endSession();
 
       return res
         .status(200)
-        .json({ message: "New Post created.", responseData: newPost });
+        .json({ message: "New User Added.", responseData: newUser });
     } catch (error: unknown) {
       if (session != null) {
         try {
@@ -40,13 +40,13 @@ export default class PostController {
     }
   };
 
-  retrieveAllPosts: RequestHandler = async (
+  getAllUsers: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
-      const posts = await Post.find();
-      return res.status(200).json({ responseData: posts });
+      const users = await User.find();
+      return res.status(200).json({ responseData: users });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -56,18 +56,18 @@ export default class PostController {
     }
   };
 
-  updatePost: RequestHandler = async (
+  updateUser: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
-      const { id } = req.params;
-      let updatedPost = await Post.findByIdAndUpdate(id, req.body, {
+      const { user_id } = req.params;
+      let updatedUser = await User.findByIdAndUpdate(user_id, req.body, {
         new: true,
       });
       return res
         .status(200)
-        .json({ message: "Post updated.", responseData: updatedPost });
+        .json({ message: "User updated.", responseData: updatedUser });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -77,17 +77,17 @@ export default class PostController {
     }
   };
 
-  deletePost: RequestHandler = async (
+  deleteUser: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
-      const { id } = req.params;
-      let deletedPost = await Post.findByIdAndDelete(id);
+      const { user_id } = req.params;
+      let deletedUser = await User.findByIdAndDelete(user_id);
 
       return res
         .status(200)
-        .json({ message: "Post deleted.", responseData: deletedPost });
+        .json({ message: "User deleted.", responseData: deletedUser });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });

@@ -10,20 +10,17 @@ export default class PostRoutes {
   }
 
   private configRoutes = (): void => {
-    // POST /api/v1/post
+    // POST /genix/v1/post
     this.router.post("/", this.postController.createPost);
 
-    // GET /api/v1/post
+    // GET /genix/v1/post
     this.router.get("/", this.postController.retrieveAllPosts);
 
-    // PUT /api/v1/post/:id
+    // PUT /genix/v1/post/:id
     this.router.put("/:id", this.postController.updatePost);
 
-    // DELETE /api/v1/post/:id
+    // DELETE /genix/v1/post/:id
     this.router.delete("/:id", this.postController.deletePost);
-
-    // GET /api/v1/post/category/:id
-    this.router.get("/category/:id", this.postController.searchPostByCategory);
   };
 
   public getRouter = (): Router => {
