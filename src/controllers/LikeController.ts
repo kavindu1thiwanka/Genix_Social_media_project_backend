@@ -1,9 +1,9 @@
 import { RequestHandler, Request, Response } from "express";
 import mongoose, { ClientSession } from "mongoose";
-import { User } from "../models/User";
+import { Like } from "../models/Like";
 
 export default class PostController {
-  addUser: RequestHandler = async (
+  createPost: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
@@ -13,16 +13,16 @@ export default class PostController {
       session = await mongoose.startSession();
       session.startTransaction();
 
-      const user = new User(req.body);
+      const like = new Like(req.body);
 
-      let newUser = await user.save();
+      let newLike = await like.save();
 
       await session.commitTransaction();
       session.endSession();
 
       return res
         .status(200)
-        .json({ message: "New User Added.", responseData: newUser });
+        .json({ message: "New Like Added.", responseData: newLike });
     } catch (error: unknown) {
       if (session != null) {
         try {
@@ -40,13 +40,13 @@ export default class PostController {
     }
   };
 
-  getAllUsers: RequestHandler = async (
+  retrieveAllPosts: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
-      const users = await User.find();
-      return res.status(200).json({ responseData: users });
+      const likes = await Like.find();
+      return res.status(200).json({ responseData: likes });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -56,47 +56,18 @@ export default class PostController {
     }
   };
 
-  checkLogin: RequestHandler = async (
-    req: Request,
-    res: Response
-  ): Promise<Response> => {
-    try {
-      const users = await User.find();
-      for (let index = 0; index < users.length; index++) {
-        if(users[index].user_id == req.params.id){
-          if(users[index].user_password == req.params.password){
-            return res.status(200).json({ responseData: true });
-            break;
-          }else{
-            return res.status(200).json({ responseData: false });
-            break;
-          }
-        }else{
-          continue;
-        }
-      }
-      return res.status(404).send("Unvalid User");
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        return res.status(500).json({ message: error.message });
-      } else {
-        return res.status(500).json({ message: "Unknown error occured." });
-      }
-    }
-  };
-
-  updateUser: RequestHandler = async (
+  updatePost: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
       const { _id } = req.params;
-      let updatedUser = await User.findByIdAndUpdate(_id, req.body, {
+      let updatedPost = await Like.findByIdAndUpdate(_id, req.body, {
         new: true,
       });
       return res
         .status(200)
-        .json({ message: "User updated.", responseData: updatedUser });
+        .json({ message: "Like updated.", responseData: updatedPost });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -106,17 +77,17 @@ export default class PostController {
     }
   };
 
-  deleteUser: RequestHandler = async (
+  deletePost: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
       const { _id } = req.params;
-      let deletedUser = await User.findByIdAndDelete(_id);
+      let deletedPost = await Like.findByIdAndDelete(_id);
 
       return res
         .status(200)
-        .json({ message: "User deleted.", responseData: deletedUser });
+        .json({ message: "Like deleted.", responseData: deletedPost });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });

@@ -1,9 +1,9 @@
 import { RequestHandler, Request, Response } from "express";
 import mongoose, { ClientSession } from "mongoose";
-import { User } from "../models/User";
+import { Friend } from "../models/Friend";
 
 export default class PostController {
-  addUser: RequestHandler = async (
+  createFriendList: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
@@ -13,16 +13,16 @@ export default class PostController {
       session = await mongoose.startSession();
       session.startTransaction();
 
-      const user = new User(req.body);
+      const friend = new Friend(req.body);
 
-      let newUser = await user.save();
+      let newFriend = await friend.save();
 
       await session.commitTransaction();
       session.endSession();
 
       return res
         .status(200)
-        .json({ message: "New User Added.", responseData: newUser });
+        .json({ message: "New Post created.", responseData: newFriend });
     } catch (error: unknown) {
       if (session != null) {
         try {
@@ -40,42 +40,50 @@ export default class PostController {
     }
   };
 
-  getAllUsers: RequestHandler = async (
+  addFriendtoList: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
-    try {
-      const users = await User.find();
-      return res.status(200).json({ responseData: users });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        return res.status(500).json({ message: error.message });
-      } else {
-        return res.status(500).json({ message: "Unknown error occured." });
-      }
-    }
-  };
+    let session: ClientSession | null = null;
 
-  checkLogin: RequestHandler = async (
-    req: Request,
-    res: Response
-  ): Promise<Response> => {
     try {
-      const users = await User.find();
-      for (let index = 0; index < users.length; index++) {
-        if(users[index].user_id == req.params.id){
-          if(users[index].user_password == req.params.password){
-            return res.status(200).json({ responseData: true });
-            break;
-          }else{
-            return res.status(200).json({ responseData: false });
-            break;
-          }
-        }else{
-          continue;
+      session = await mongoose.startSession();
+      session.startTransaction();
+
+      const friend = new Friend(req.body);
+
+      let newFriend = await friend.save();
+
+      await session.commitTransaction();
+      session.endSession();
+
+      return res
+        .status(200)
+        .json({ message: "New Post created.", responseData: newFriend });
+    } catch (error: unknown) {
+      if (session != null) {
+        try {
+          await session.abortTransaction();
+        } catch (abortError) {
+          console.log(`Error aborting transaction: ${abortError}`);
         }
       }
-      return res.status(404).send("Unvalid User");
+
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message });
+      } else {
+        return res.status(500).json({ message: "Unknown error occured." });
+      }
+    }
+  };
+
+  retrieveAllFriends: RequestHandler = async (
+    req: Request,
+    res: Response
+  ): Promise<Response> => {
+    try {
+      const friends = await Friend.find();
+      return res.status(200).json({ responseData: friends });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -85,18 +93,18 @@ export default class PostController {
     }
   };
 
-  updateUser: RequestHandler = async (
+  removeFriendFromList: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
       const { _id } = req.params;
-      let updatedUser = await User.findByIdAndUpdate(_id, req.body, {
+      let updatedFriend = await Friend.findByIdAndUpdate(_id, req.body, {
         new: true,
       });
       return res
         .status(200)
-        .json({ message: "User updated.", responseData: updatedUser });
+        .json({ message: "Post updated.", responseData: updatedFriend });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -106,17 +114,17 @@ export default class PostController {
     }
   };
 
-  deleteUser: RequestHandler = async (
+  removeFriend: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
       const { _id } = req.params;
-      let deletedUser = await User.findByIdAndDelete(_id);
+      let deletedFriend = await Friend.findByIdAndDelete(_id);
 
       return res
         .status(200)
-        .json({ message: "User deleted.", responseData: deletedUser });
+        .json({ message: "Friend deleted.", responseData: deletedFriend });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });

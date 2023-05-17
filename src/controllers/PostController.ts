@@ -61,8 +61,8 @@ export default class PostController {
     res: Response
   ): Promise<Response> => {
     try {
-      const { id } = req.params;
-      let updatedPost = await Post.findByIdAndUpdate(id, req.body, {
+      const { _id } = req.params;
+      let updatedPost = await Post.findByIdAndUpdate(_id, req.body, {
         new: true,
       });
       return res
@@ -82,8 +82,8 @@ export default class PostController {
     res: Response
   ): Promise<Response> => {
     try {
-      const { id } = req.params;
-      let deletedPost = await Post.findByIdAndDelete(id);
+      const { _id } = req.params;
+      let deletedPost = await Post.findByIdAndDelete(_id);
 
       return res
         .status(200)

@@ -10,16 +10,15 @@ export default class UserRoutes {
   }
 
   private configRoutes = (): void => {
-    // POST /genix/v1/user
+    
     this.router.post("/", this.userController.addUser);
 
-    // GET /genix/v1/user
     this.router.get("/", this.userController.getAllUsers);
 
-    // PUT /genix/v1/user/:id
+    this.router.get("/:id&:password", this.userController.checkLogin);
+
     this.router.put("/:id", this.userController.updateUser);
 
-    // DELETE /genix/v1/user/:id
     this.router.delete("/:id", this.userController.deleteUser);
   };
 
