@@ -45,7 +45,17 @@ export default class PostController {
   ): Promise<Response> => {
     try {
       const friends = await Friend.find();
-      return res.status(200).json({ responseData: friends });
+      for (let index = 0; index < friends.length; index++) {
+        if(friends[index]._id == req.params.id){
+          friends[index].friends_ids.push(req.params.friend_id);
+          friends[index].friendsCount+=1;
+          return res.status(200).send("Friend Added to List.");
+          break;
+        }else{
+          continue;
+        }
+      }
+      return res.status(404).send("Invalid User.");
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -60,8 +70,18 @@ export default class PostController {
     res: Response
   ): Promise<Response> => {
     try {
-      const friends = await Friend.findById(req.params.id);
-      return res.status(200).json({ responseData: friends });
+      const friend = await Friend.find();
+      for (let index = 0; index < friend.length; index++) {
+        if (friend[index].user_id == req.params.id) {
+          var a =friend[index].friends_ids
+          console.log(a);
+          return res.status(200).json({ responseData: a });
+          break;
+        }else{
+          continue;
+        }
+      }
+      return res.status(200).send("Invalid User..")
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -76,8 +96,8 @@ export default class PostController {
     res: Response
   ): Promise<Response> => {
     try {
-      const { _id } = req.params;
-      let updatedFriend = await Friend.findByIdAndUpdate(_id, req.body, {
+      const { id } = req.params;
+      let updatedFriend = await Friend.findByIdAndUpdate(id, req.body, {
         new: true,
       });
       return res
@@ -97,8 +117,8 @@ export default class PostController {
     res: Response
   ): Promise<Response> => {
     try {
-      const { _id } = req.params;
-      let deletedFriend = await Friend.findByIdAndDelete(_id);
+      const { id } = req.params;
+      let deletedFriend = await Friend.findByIdAndDelete(id);
 
       return res
         .status(200)

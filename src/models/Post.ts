@@ -1,7 +1,6 @@
 import { Document, Schema, model } from "mongoose";
 
 export interface IPost extends Document {
-    post_id: string;
     user_id: string;
     date: string;
     time: string;
@@ -11,10 +10,6 @@ export interface IPost extends Document {
 
 const PostSchema = new Schema(
   {
-    post_id: {
-      type: String,
-      required: true,
-    },
     user_id: {
       type: String,
       required: true,

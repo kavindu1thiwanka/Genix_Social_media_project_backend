@@ -63,7 +63,7 @@ export default class PostController {
     try {
       const users = await User.find();
       for (let index = 0; index < users.length; index++) {
-        if(users[index].user_id == req.params.id){
+        if(users[index]._id == req.params.id){
           if(users[index].user_password == req.params.password){
             return res.status(200).json({ responseData: true });
             break;
@@ -75,7 +75,7 @@ export default class PostController {
           continue;
         }
       }
-      return res.status(404).send("Unvalid User");
+      return res.status(404).send("Invalid User");
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -90,8 +90,8 @@ export default class PostController {
     res: Response
   ): Promise<Response> => {
     try {
-      const { _id } = req.params;
-      let updatedUser = await User.findByIdAndUpdate(_id, req.body, {
+      const { id } = req.params;
+      let updatedUser = await User.findByIdAndUpdate(id, req.body, {
         new: true,
       });
       return res
@@ -111,8 +111,8 @@ export default class PostController {
     res: Response
   ): Promise<Response> => {
     try {
-      const { _id } = req.params;
-      let deletedUser = await User.findByIdAndDelete(_id);
+      const { id } = req.params;
+      let deletedUser = await User.findByIdAndDelete(id);
 
       return res
         .status(200)
