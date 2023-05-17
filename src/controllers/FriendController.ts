@@ -8,7 +8,6 @@ export default class PostController {
     res: Response
   ): Promise<Response> => {
     let session: ClientSession | null = null;
-
     try {
       session = await mongoose.startSession();
       session.startTransaction();
@@ -44,31 +43,10 @@ export default class PostController {
     req: Request,
     res: Response
   ): Promise<Response> => {
-    let session: ClientSession | null = null;
-
     try {
-      session = await mongoose.startSession();
-      session.startTransaction();
-
-      const friend = new Friend(req.body);
-
-      let newFriend = await friend.save();
-
-      await session.commitTransaction();
-      session.endSession();
-
-      return res
-        .status(200)
-        .json({ message: "New Post created.", responseData: newFriend });
+      const friends = await Friend.find();
+      return res.status(200).json({ responseData: friends });
     } catch (error: unknown) {
-      if (session != null) {
-        try {
-          await session.abortTransaction();
-        } catch (abortError) {
-          console.log(`Error aborting transaction: ${abortError}`);
-        }
-      }
-
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
       } else {
@@ -82,7 +60,7 @@ export default class PostController {
     res: Response
   ): Promise<Response> => {
     try {
-      const friends = await Friend.find();
+      const friends = await Friend.findById(req.params.id);
       return res.status(200).json({ responseData: friends });
     } catch (error: unknown) {
       if (error instanceof Error) {

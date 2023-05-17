@@ -10,13 +10,13 @@ export default class PostRoutes {
   }
 
   private configRoutes = (): void => {
-    this.router.post("/:id", this.friendController.createFriendList);
+    this.router.post("/", this.friendController.createFriendList);
     
     this.router.put("/:user_id&friend_id", this.friendController.addFriendtoList);
 
-    this.router.get("/", this.friendController.retrieveAllFriends);
+    this.router.get("/:id", this.friendController.retrieveAllFriends);
 
-    this.router.put("/:id&friend_id", this.friendController.removeFriendFromList);
+    this.router.put("/:user_id&friend_id", this.friendController.removeFriendFromList);
 
     this.router.delete("/:id", this.friendController.removeFriend);
   };
