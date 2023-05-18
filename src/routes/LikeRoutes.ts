@@ -11,13 +11,13 @@ export default class LikeRoutes {
 
   private configRoutes = (): void => {
     
-    this.router.post("/", this.likeController.createPost);
+    this.router.post("/", this.likeController.createLikeCollection);
 
-    this.router.get("/", this.likeController.retrieveAllPosts);
+    this.router.get("/:post_id", this.likeController.retrieveAllLikes);
 
-    this.router.put("/:id", this.likeController.updatePost);
+    this.router.put("/:id", this.likeController.updateLikes);
 
-    this.router.delete("/:id", this.likeController.deletePost);
+    this.router.delete("/:id", this.likeController.deleteLikeCollection);
   };
 
   public getRouter = (): Router => {

@@ -63,7 +63,7 @@ export default class PostController {
     try {
       const users = await User.find();
       for (let index = 0; index < users.length; index++) {
-        if(users[index]._id == req.params.id){
+        if(users[index].email == req.params.email){
           if(users[index].user_password == req.params.password){
             return res.status(200).json({ responseData: true });
             break;
@@ -75,7 +75,7 @@ export default class PostController {
           continue;
         }
       }
-      return res.status(404).send("Invalid User");
+      return res.status(200).json({ responseData: false });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });

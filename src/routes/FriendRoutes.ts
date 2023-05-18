@@ -10,7 +10,7 @@ export default class PostRoutes {
   }
 
   private configRoutes = (): void => {
-    this.router.post("/", this.friendController.createFriendList);
+    this.router.post("/", this.friendController.createFriendListCollection);
     
     this.router.put("/:id&:friend_id", this.friendController.addFriendtoList);
 

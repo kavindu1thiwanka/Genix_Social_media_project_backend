@@ -3,7 +3,7 @@ import mongoose, { ClientSession } from "mongoose";
 import { Friend } from "../models/Friend";
 
 export default class PostController {
-  createFriendList: RequestHandler = async (
+  createFriendListCollection: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
@@ -46,12 +46,12 @@ export default class PostController {
     try {
       const friends = await Friend.find();
       for (let index = 0; index < friends.length; index++) {
-        if(friends[index]._id == req.params.id){
+        if (friends[index]._id == req.params.id) {
           friends[index].friends_ids.push(req.params.friend_id);
-          friends[index].friendsCount+=1;
+          friends[index].friendsCount += 1;
           return res.status(200).send("Friend Added to List.");
           break;
-        }else{
+        } else {
           continue;
         }
       }
@@ -73,15 +73,14 @@ export default class PostController {
       const friend = await Friend.find();
       for (let index = 0; index < friend.length; index++) {
         if (friend[index].user_id == req.params.id) {
-          var a =friend[index].friends_ids
-          console.log(a);
+          var a = friend[index].friends_ids;
           return res.status(200).json({ responseData: a });
           break;
-        }else{
+        } else {
           continue;
         }
       }
-      return res.status(200).send("Invalid User..")
+      return res.status(200).send("Invalid User..");
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });

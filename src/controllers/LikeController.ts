@@ -3,7 +3,7 @@ import mongoose, { ClientSession } from "mongoose";
 import { Like } from "../models/Like";
 
 export default class PostController {
-  createPost: RequestHandler = async (
+  createLikeCollection: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
@@ -40,13 +40,20 @@ export default class PostController {
     }
   };
 
-  retrieveAllPosts: RequestHandler = async (
+  retrieveAllLikes: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
       const likes = await Like.find();
-      return res.status(200).json({ responseData: likes });
+      for (let index = 0; index < likes.length; index++) {
+        if (likes[index].post_id == req.params.post_id) {
+          return res.status(200).json({ responseData: likes[index].likeCount });
+        } else {
+          continue;
+        }
+      }
+      return res.status(404).send("Invalid Post");
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -56,18 +63,27 @@ export default class PostController {
     }
   };
 
-  updatePost: RequestHandler = async (
+  updateLikes: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
-      const { id } = req.params;
-      let updatedPost = await Like.findByIdAndUpdate(id, req.body, {
-        new: true,
-      });
-      return res
-        .status(200)
-        .json({ message: "Like updated.", responseData: updatedPost });
+      const likes = await Like.find();
+      for (let index = 0; index < likes.length; index++) {
+        if (likes[index].post_id == req.params.id) {
+          let updatedPost = await Like.findByIdAndUpdate(
+            likes[index]._id,
+            req.body,
+            {
+              new: true,
+            }
+          );
+          return res.status(200).json({ responseData: updatedPost });
+        } else {
+          continue;
+        }
+      }
+      return res.status(404).send("Invalid Post");
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -77,17 +93,21 @@ export default class PostController {
     }
   };
 
-  deletePost: RequestHandler = async (
+  deleteLikeCollection: RequestHandler = async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
-      const { id } = req.params;
-      let deletedPost = await Like.findByIdAndDelete(id);
-
-      return res
-        .status(200)
-        .json({ message: "Like deleted.", responseData: deletedPost });
+      const likes = await Like.find();
+      for (let index = 0; index < likes.length; index++) {
+        if (likes[index].post_id == req.params.id) {
+          let deletedPost = await Like.findByIdAndDelete(likes[index]._id);
+          return res.status(200).json({message: "Collection Deleted.", responseData: deletedPost });
+        } else {
+          continue;
+        }
+      }
+      return res.status(404).send("Invalid Post");
     } catch (error: unknown) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });

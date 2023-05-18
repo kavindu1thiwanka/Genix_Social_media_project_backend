@@ -15,7 +15,7 @@ export default class UserRoutes {
 
     this.router.get("/", this.userController.getAllUsers);
 
-    this.router.get("/:id&:password", this.userController.checkLogin);
+    this.router.get("/:email&:password", this.userController.checkLogin);
 
     this.router.put("/:id", this.userController.updateUser);
 
