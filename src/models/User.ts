@@ -7,7 +7,7 @@ export interface IUser extends Document {
   address: string;
   email: string;
   contactNumber: string;
-  user_img?: string;
+  gender:string;
 }
 
 const UserSchema = new Schema(
@@ -36,7 +36,7 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    user_img: {
+    gender: {
       type: String,
       required: true,
     },

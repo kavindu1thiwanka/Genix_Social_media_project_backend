@@ -33,9 +33,9 @@ export default class PostController {
       }
 
       if (error instanceof Error) {
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message, responseData: false });
       } else {
-        return res.status(500).json({ message: "Unknown error occured." });
+        return res.status(500).json({ message: "Unknown error occured.", responseData: false });
       }
     }
   };
