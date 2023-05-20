@@ -1,6 +1,9 @@
 import { RequestHandler, Request, Response } from "express";
 import mongoose, { ClientSession } from "mongoose";
 import { User } from "../models/User";
+import jwt from "jsonwebtoken";
+import { config } from "dotenv";
+config();
 
 export default class PostController {
   addUser: RequestHandler = async (
@@ -65,7 +68,18 @@ export default class PostController {
       for (let index = 0; index < users.length; index++) {
         if(users[index].email == req.params.email){
           if(users[index].user_password == req.params.password){
-            return res.status(200).json({ responseData: true });
+            const user={
+              id: users[index]._id,
+              user_id: users[index].user_id,
+              name: users[index].user_name,
+              bday: users[index].birthDay,
+              address: users[index].address,
+              number: users[index].contactNumber,
+              gender: users[index].gender,
+              loginStatus: true
+            }
+            const token = jwt.sign(user, process.env.SECRET_KEY as string)
+            return res.status(200).json({ responseData: token });
             break;
           }else{
             return res.status(200).json({ responseData: false });

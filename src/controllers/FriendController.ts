@@ -21,7 +21,7 @@ export default class PostController {
 
       return res
         .status(200)
-        .json({ message: "New Post created.", responseData: newFriend });
+        .json({ message: "New Friend List created.", responseData: newFriend });
     } catch (error: unknown) {
       if (session != null) {
         try {
