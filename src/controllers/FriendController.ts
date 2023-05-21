@@ -46,11 +46,11 @@ export default class PostController {
     try {
       const friends = await Friend.find();
       for (let index = 0; index < friends.length; index++) {
-        if (friends[index]._id == req.params.id) {
+        if (friends[index].user_id == req.params.user_id) {
           friends[index].friends_ids.push(req.params.friend_id);
           friends[index].friendsCount += 1;
-          return res.status(200).send("Friend Added to List.");
-          break;
+          let updatedFriend = await Friend.findByIdAndUpdate(friends[index]._id, friends[index]);
+          return res.status(200).json({ responseData: friends[index]});
         } else {
           continue;
         }
@@ -72,10 +72,9 @@ export default class PostController {
     try {
       const friend = await Friend.find();
       for (let index = 0; index < friend.length; index++) {
-        if (friend[index].user_id == req.params.id) {
-          var a = friend[index].friends_ids;
-          return res.status(200).json({ responseData: a });
-          break;
+        if (friend[index].user_id == req.params.user_id) {
+          const list = friend[index].friends_ids;
+          return res.status(200).json({ responseData: list });
         } else {
           continue;
         }

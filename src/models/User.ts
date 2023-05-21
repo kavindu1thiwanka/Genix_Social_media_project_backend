@@ -10,6 +10,9 @@ export interface IUser extends Document {
   contactNumber: string;
   gender: string;
   userImg?: string;
+  description?:string;
+  relation?:string;
+  education?:string;
 }
 
 const UserSchema = new Schema(
@@ -47,6 +50,18 @@ const UserSchema = new Schema(
       required: true,
     },
     userImg: {
+      type: String,
+      required: false,
+    },
+    description: {
+      type: String,
+      required: false,
+    },
+    relation: {
+      type: String,
+      required: false,
+    },
+    education: {
       type: String,
       required: false,
     },

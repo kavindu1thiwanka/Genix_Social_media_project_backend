@@ -36,9 +36,13 @@ export default class PostController {
       }
 
       if (error instanceof Error) {
-        return res.status(500).json({ message: error.message, responseData: false });
+        return res
+          .status(500)
+          .json({ message: error.message, responseData: false });
       } else {
-        return res.status(500).json({ message: "Unknown error occured.", responseData: false });
+        return res
+          .status(500)
+          .json({ message: "Unknown error occured.", responseData: false });
       }
     }
   };
@@ -69,10 +73,10 @@ export default class PostController {
         if (users[index].user_id == req.params.user_id) {
           const user = {
             name: users[index].user_name,
-            userImg: users[index].userImg
-          }
+            userImg: users[index].userImg,
+          };
           return res.status(200).json({ responseData: user });
-        }else{
+        } else {
           continue;
         }
       }
@@ -93,10 +97,28 @@ export default class PostController {
     try {
       const users = await User.find();
       for (let index = 0; index < users.length; index++) {
-        if(users[index].email == req.params.email){
-          if(users[index].user_password == req.params.password){
-            let image;
-            const user={
+        if (users[index].email == req.params.email) {
+          if (users[index].user_password == req.params.password) {
+            let description;
+            let relation;
+            let education;
+            if(users[index].description != undefined){
+              description=users[index].description;
+            }else{
+              description="";
+            }
+            if(users[index].relation != undefined){
+              relation=users[index].relation;
+            }else{
+              relation="Not Set Yet";
+            }
+            if(users[index].education != undefined){
+              education=users[index].education;
+            }else{
+              education="Not Set Yet";
+            }
+
+            const user = {
               id: users[index]._id,
               user_id: users[index].user_id,
               name: users[index].user_name,
@@ -104,16 +126,20 @@ export default class PostController {
               address: users[index].address,
               number: users[index].contactNumber,
               gender: users[index].gender,
-              userImg: users[index].userImg
-            }
-            const token = jwt.sign(user, process.env.SECRET_KEY as string)
+              userImg: users[index].userImg,
+              email: users[index].email,
+              description: description,
+              relation: relation,
+              education: education
+            };
+            const token = jwt.sign(user, process.env.SECRET_KEY as string);
             return res.status(200).json({ responseData: token });
             break;
-          }else{
+          } else {
             return res.status(200).json({ responseData: false });
             break;
           }
-        }else{
+        } else {
           continue;
         }
       }
