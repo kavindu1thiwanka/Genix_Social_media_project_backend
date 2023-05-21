@@ -96,9 +96,6 @@ export default class PostController {
         if(users[index].email == req.params.email){
           if(users[index].user_password == req.params.password){
             let image;
-            if(users[index].userImg == undefined){
-              image = "Genix c.png";
-            }
             const user={
               id: users[index]._id,
               user_id: users[index].user_id,
@@ -107,7 +104,7 @@ export default class PostController {
               address: users[index].address,
               number: users[index].contactNumber,
               gender: users[index].gender,
-              userImg: image
+              userImg: users[index].userImg
             }
             const token = jwt.sign(user, process.env.SECRET_KEY as string)
             return res.status(200).json({ responseData: token });
